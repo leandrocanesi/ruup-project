@@ -1,4 +1,4 @@
-version: "3.3"
+
 x-environment: &environment
   environment:
     ######################################################## REQUIRED ########################################################
@@ -178,8 +178,11 @@ services:
       # Postgres DB Super User Password
       # Replace the below with your own secure password & Make sure the password matches the password field in DATABASE_URL above
       - POSTGRES_PASSWORD=postgres
+    networks:
+      - app_network  # Adicionando rede compartilhada
 
   formbricks:
+    container_name: formbricks  # Define explicitamente o nome do contêiner para nao ser aleatório
     restart: always
     image: ghcr.io/formbricks/formbricks:latest
     depends_on:
@@ -189,8 +192,14 @@ services:
     volumes:
       - uploads:/home/nextjs/apps/web/uploads/
     <<: *environment
+    networks:
+      - app_network  # Adicionando rede compartilhada
 
 volumes:
   postgres:
     driver: local
   uploads:
+
+networks:
+  app_network:
+    driver: bridge
